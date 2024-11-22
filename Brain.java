@@ -15,12 +15,10 @@ import jason.architecture.AgArch;
 class Brain extends Thread implements SensorInput{
     private SendCommand m_krislet;            // robot which is controled by this brain
     private Memory m_memory;                // place where all information is stored
-    private char m_side;
     volatile private boolean m_timeOver;
     private String m_playMode;
-    private String m_team;
-    private int m_number;
     private SoccerAgent m_agent;
+    private char m_side;
     //---------------------------------------------------------------------------
     // This constructor:
     // - stores connection to krislet
@@ -33,11 +31,9 @@ class Brain extends Thread implements SensorInput{
         m_timeOver = false;
         m_krislet = krislet;
         m_memory = new Memory();
-        m_team = team;
-        m_side = side;
-        m_number = number;
         m_playMode = playMode;
-        m_agent = new SoccerAgent(side, number, playMode);
+        m_side = side;
+        m_agent = new SoccerAgent(side, number, playMode, m_memory);
         start();
     }
 
@@ -75,6 +71,13 @@ class Brain extends Thread implements SensorInput{
         }
 //
         while (!m_timeOver) {
+            String intent = m_agent.getReasoningResult();
+            PlayerAction action = getAction(intent);
+            if (intent.equals("kick")) {
+                action.execute(m_memory.getObject("goal " + m_side));
+            } else {
+                action.execute(m_memory.getObject("ball"));
+            }
 
             // sleep one step to ensure that we will not send
             // two commands in one cycle.
@@ -84,9 +87,16 @@ class Brain extends Thread implements SensorInput{
             }
         }
         m_krislet.bye();
-//        m_agent.run();
     }
 
+    private PlayerAction getAction(String name) {
+        return switch (name) {
+            case "turn_to" -> TurnTo.getInstance(m_krislet);
+            case "dash" -> Dash.getInstance(m_krislet);
+            case "kick" -> Kick.getInstance(m_krislet);
+            default -> throw new IllegalArgumentException("No action available for: " + name);
+        };
+    }
 
     //===========================================================================
     // Here are suporting functions for implement logic
@@ -114,15 +124,4 @@ class Brain extends Thread implements SensorInput{
             m_timeOver = true;
         }
     }
-
-
-    //===========================================================================
-    // Private members
-//    private SendCommand m_krislet;            // robot which is controled by this brain
-//    private Memory m_memory;                // place where all information is stored
-//    private char m_side;
-//    volatile private boolean m_timeOver;
-//    private String m_playMode;
-//    private String m_team;
-//    private int m_number;
 }
