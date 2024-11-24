@@ -1,7 +1,7 @@
 class Find implements PlayerAction {
     private SendCommand m_krislet;
     private static Find instance;
-    private final static int TURN_DEG = 90;
+    private final static int TURN_DEG = 40;
 
     private Find(SendCommand krislet) {
         m_krislet = krislet;
@@ -26,6 +26,7 @@ class Find implements PlayerAction {
 class TurnTo implements PlayerAction {
     private SendCommand m_krislet;
     private static TurnTo instance;
+    private final static int DEFAULT_TURN = 40;  // Match original Brain behavior
 
     private TurnTo(SendCommand krislet) {
         m_krislet = krislet;
@@ -41,8 +42,16 @@ class TurnTo implements PlayerAction {
 
     @Override
     public void execute(ObjectInfo target) {
-        if (target != null && target.getDirection() != 0) {
+        if (target == null) {
+            // If no target visible, turn default amount
+            m_krislet.turn(DEFAULT_TURN);
+            System.out.println("TurnTo: No target, turning " + DEFAULT_TURN);
+        } else if (target.getDirection() != 0) {
+            // If target visible and not aligned, turn towards it
             m_krislet.turn(target.getDirection());
+            System.out.println("TurnTo: Target found, turning " + target.getDirection());
+        } else {
+            System.out.println("TurnTo: Target aligned, no turn needed");
         }
     }
 }
@@ -67,7 +76,12 @@ class Kick implements PlayerAction {
     @Override
     public void execute(ObjectInfo target) {
         if (target != null) {
+            System.out.println("Kick: Kicking towards goal at direction " + target.getDirection());
             m_krislet.kick(KICK_PWR, target.getDirection());
+        } else {
+            // Just turn to find the goal, like in original Brain.java
+            System.out.println("Kick: No goal visible, turning to find it");
+            m_krislet.turn(40);
         }
     }
 }
@@ -95,7 +109,9 @@ class Dash implements PlayerAction {
     public void execute(ObjectInfo target) {
         if (target != null && target.getDistance() > TARGET_DIST) {
             float power = target.getDistance() * 10;
-            m_krislet.dash(power> MAX_DASH_PWR ? MAX_DASH_PWR : power);
+            power = Math.min(power, MAX_DASH_PWR);
+            System.out.println("Dash: Distance to target = " + target.getDistance());
+            m_krislet.dash(power);
         }
     }
 }
