@@ -19,6 +19,8 @@ class Brain extends Thread implements SensorInput{
     private String m_playMode;
     private SoccerAgent m_agent;
     private char m_side;
+    private boolean m_positioned;
+
     //---------------------------------------------------------------------------
     // This constructor:
     // - stores connection to krislet
@@ -33,7 +35,10 @@ class Brain extends Thread implements SensorInput{
         m_memory = new Memory();
         m_playMode = playMode;
         m_side = side;
+        m_positioned = false;
+
         m_agent = new SoccerAgent(side, number, playMode, m_memory);
+
         start();
     }
 
@@ -63,13 +68,16 @@ class Brain extends Thread implements SensorInput{
     // ************************************************
 
     public void run() {
-//        ObjectInfo object;
-//
         // first put it somewhere on my side
-        if (Pattern.matches("^before_kick_off.*", m_playMode)) {
+         if (!m_positioned) {
             m_krislet.move(-Math.random() * 52.5, 34 - Math.random() * 68.0);
+            m_positioned = true;
+            try {
+                // Give some time for the move to complete
+                Thread.sleep(2 * SoccerParams.simulator_step);
+            } catch (Exception e) {}
         }
-//
+
         while (!m_timeOver) {
             String intent = m_agent.getReasoningResult();
             PlayerAction action = getAction(intent);

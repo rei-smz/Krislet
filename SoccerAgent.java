@@ -25,7 +25,8 @@ public class SoccerAgent extends AgArch {
             Agent ag = new Agent();
             new TransitionSystem(ag, null, null, this);
             ag.initAg();
-            ag.load(playMode + ".asl");
+//            ag.load(playMode + ".asl");
+            ag.loadInitialAS("player.asl");
             ag.addBel(Literal.parseLiteral("side(" + side + ")"));
             ag.addBel(Literal.parseLiteral("number(" + number + ")"));
         } catch (Exception e) {
