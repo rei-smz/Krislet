@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jason-interpreter-3.3.0" level="project" />
+    <orderEntry type="library" name="glassfish.javax.json" level="project" />
   </component>
 </module>
