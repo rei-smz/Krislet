@@ -11,6 +11,8 @@
 import java.lang.Math;
 import java.util.regex.*;
 import jason.architecture.AgArch;
+import jason.asSyntax.Structure;
+import jason.util.Pair;
 
 class Brain extends Thread implements SensorInput{
     private SendCommand m_krislet;            // robot which is controled by this brain
@@ -18,8 +20,7 @@ class Brain extends Thread implements SensorInput{
     volatile private boolean m_timeOver;
     private String m_playMode;
     private SoccerAgent m_agent;
-    private char m_side;
-    private boolean m_positioned;
+//    private char m_side;
 
     //---------------------------------------------------------------------------
     // This constructor:
@@ -34,10 +35,9 @@ class Brain extends Thread implements SensorInput{
         m_krislet = krislet;
         m_memory = new Memory();
         m_playMode = playMode;
-        m_side = side;
-        m_positioned = false;
+//        m_side = side;
 
-        m_agent = new SoccerAgent(side, number, playMode, m_memory);
+        m_agent = new SoccerAgent(side, number, m_memory);
 
         start();
     }
@@ -69,31 +69,30 @@ class Brain extends Thread implements SensorInput{
 
     public void run() {
         // first put it somewhere on my side
-         if (!m_positioned) {
+        if (Pattern.matches("^before_kick_off.*", m_playMode)) {
             m_krislet.move(-Math.random() * 52.5, 34 - Math.random() * 68.0);
-            m_positioned = true;
-            try {
-                // Give some time for the move to complete
-                Thread.sleep(2 * SoccerParams.simulator_step);
-            } catch (Exception e) {}
         }
 
         while (!m_timeOver) {
-            String intent = m_agent.getReasoningResult();
-            PlayerAction action = getAction(intent);
-            if (intent.equals("kick")) {
-                String targetGoal = (m_side == 'l') ? "goal r" : "goal l";
-                action.execute(m_memory.getObject(targetGoal));
-            } else {
-                action.execute(m_memory.getObject("ball"));
-            }
-
-            // sleep one step to ensure that we will not send
-            // two commands in one cycle.
             try {
                 Thread.sleep(2 * SoccerParams.simulator_step);
-            } catch (Exception e) {
+            } catch (Exception e) {}
+
+            Structure intent = m_agent.getReasoningResult();
+            if (intent == null) {
+                continue;
             }
+            PlayerAction action = getAction(intent.getFunctor());
+            String objectName = intent.getTerm(0).toString();
+            ObjectInfo object = null;
+            if (objectName.equals("goal_l")) {
+                object = m_memory.getObject("goal l");
+            } else if (objectName.equals("goal_r")) {
+                object = m_memory.getObject("goal r");
+            } else {
+                object = m_memory.getObject(objectName);
+            }
+            action.execute(object);
         }
         m_krislet.bye();
     }

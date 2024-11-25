@@ -3,6 +3,8 @@ import jason.asSemantics.ActionExec;
 import jason.asSemantics.Agent;
 import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Literal;
+import jason.asSyntax.Structure;
+import jason.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +16,10 @@ public class SoccerAgent extends AgArch {
     private static Logger logger = Logger.getLogger(SoccerAgent.class.getName());
     private Memory m_memory;
     private boolean m_running;
-    private String m_currentIntent;
+    private Structure m_currentIntent;
 
     public SoccerAgent(char side,
                        int number,
-                       String playMode,
                        Memory memory) {
         // set up the Jason agent
         try {
@@ -33,11 +34,11 @@ public class SoccerAgent extends AgArch {
             logger.log(Level.SEVERE, "Init error", e);
         }
         m_running = false;
-        m_currentIntent = "";
+        m_currentIntent = null;
         m_memory = memory;
     }
 
-    public String getReasoningResult() {
+    public Structure getReasoningResult() {
         run();
         return m_currentIntent;
     }
@@ -61,7 +62,8 @@ public class SoccerAgent extends AgArch {
         // set that the execution was ok
         action.setResult(true);
         actionExecuted(action);
-        m_currentIntent = action.getActionTerm().toString();
+//        m_currentIntent = new Pair<>(action.getActionTerm().getFunctor(), action.getActionTerm().getTerm(0).toString());
+        m_currentIntent = action.getActionTerm();
         m_running = false;
     }
 
