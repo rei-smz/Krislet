@@ -82,7 +82,8 @@ class Brain extends Thread implements SensorInput{
             String intent = m_agent.getReasoningResult();
             PlayerAction action = getAction(intent);
             if (intent.equals("kick")) {
-                action.execute(m_memory.getObject("goal " + m_side));
+                String targetGoal = (m_side == 'l') ? "goal r" : "goal l";
+                action.execute(m_memory.getObject(targetGoal));
             } else {
                 action.execute(m_memory.getObject("ball"));
             }
