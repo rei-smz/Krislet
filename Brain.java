@@ -99,6 +99,7 @@ class Brain extends Thread implements SensorInput{
 
     private PlayerAction getAction(String name) {
         return switch (name) {
+            case "find" -> Find.getInstance(m_krislet);
             case "turn_to" -> TurnTo.getInstance(m_krislet);
             case "dash" -> Dash.getInstance(m_krislet);
             case "kick" -> Kick.getInstance(m_krislet);
