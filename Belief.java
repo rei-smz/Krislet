@@ -1,11 +1,12 @@
 public class Belief {
-    public final static String BALL_UNKNOWN = "ball_unknown";
-    public final static String BALL_FAR = "ball_far";
-    public final static String BALL_CLOSE = "ball_close";
-    public final static String BALL_SAME_DIR = "ball_same_dir";
-    public final static String BALL_DIFF_DIR = "ball_diff_dir";
-    public final static String GOAL_L_UNKNOWN = "goal_l_unknown";
-    public final static String GOAL_L_KNOWN = "goal_l_known";
-    public final static String GOAL_R_UNKNOWN = "goal_r_unknown";
-    public final static String GOAL_R_KNOWN = "goal_r_known";
+    public final static String BALL_UNKNOWN = "Unknown(ball)";
+    public final static String BALL_FAR = "Far(ball)";
+    public final static String BALL_CLOSE = "Close(ball)";
+    public final static String BALL_SEEN = "Seen(ball)";
+    public final static String BALL_UNSEEN = "Unseen(ball)";
+    public final static String ATTACKER_CLOSE = "Close(attacker)";
+    public final static String OPPONENT_GOAL_UNKNOWN = "Unknown(oppo_goal)";
+    public final static String OPPONENT_GOAL_KNOWN = "Known(oppo_goal)";
+    public final static String OWN_GOAL_KNOWN = "Known(own_goal)";
+    public final static String OWN_GOAL_UNKNOWN = "Unknown(own_goal)";
 }

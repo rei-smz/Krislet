@@ -97,31 +97,66 @@ public class SoccerAgent extends AgArch {
             }
 
             if (ball.getDirection() != 0) {
-                l.add(Literal.parseLiteral(Belief.BALL_DIFF_DIR));
+                l.add(Literal.parseLiteral(Belief.BALL_SEEN));
             } else {
-                l.add(Literal.parseLiteral(Belief.BALL_SAME_DIR));
+                l.add(Literal.parseLiteral(Belief.BALL_UNSEEN));
             }
         }
 
         // Log goal perceptions
         String targetGoal = (m_side == 'l') ? "goal r" : "goal l";
         System.out.println("Looking for goal: " + targetGoal);
-        
-        if (goalL != null) {
-            System.out.println("Left goal visible: distance=" + goalL.getDistance() + ", direction=" + goalL.getDirection());
-            l.add(Literal.parseLiteral(Belief.GOAL_L_KNOWN));
-        } else {
-            System.out.println("Left goal not visible");
-            l.add(Literal.parseLiteral(Belief.GOAL_L_UNKNOWN));
-        }
 
-        if (goalR != null) {
-            System.out.println("Right goal visible: distance=" + goalR.getDistance() + ", direction=" + goalR.getDirection());
-            l.add(Literal.parseLiteral(Belief.GOAL_R_KNOWN));
-        } else {
-            System.out.println("Right goal not visible");
-            l.add(Literal.parseLiteral(Belief.GOAL_R_UNKNOWN));
+        if (m_side == 'l')
+        {
+            if(goalR != null)
+            {
+                System.out.println("Right goal visible: distance=" + goalR.getDistance() + ", direction=" + goalR.getDirection());
+                l.add(Literal.parseLiteral(Belief.OPPONENT_GOAL_KNOWN));
+            }
+            else
+            {
+                System.out.println("Right goal not visible");
+                l.add(Literal.parseLiteral(Belief.OPPONENT_GOAL_UNKNOWN));
+            }
+
+            if(goalL != null)
+            {
+                System.out.println("Left goal visible: distance=" + goalL.getDistance() + ", direction=" + goalL.getDirection());
+                l.add(Literal.parseLiteral(Belief.OWN_GOAL_KNOWN));
+            }
+            else
+            {
+                System.out.println("Left goal not visible");
+                l.add(Literal.parseLiteral(Belief.OWN_GOAL_UNKNOWN));
+            }
         }
+        else
+        {
+            if(goalL != null)
+            {
+                System.out.println("Left goal visible: distance=" + goalL.getDistance() + ", direction=" + goalL.getDirection());
+                l.add(Literal.parseLiteral(Belief.OPPONENT_GOAL_KNOWN));
+            }
+            else
+            {
+                System.out.println("Left goal not visible");
+                l.add(Literal.parseLiteral(Belief.OPPONENT_GOAL_UNKNOWN));
+            }
+
+            if(goalR != null)
+            {
+                System.out.println("Right goal visible: distance=" + goalR.getDistance() + ", direction=" + goalR.getDirection());
+                l.add(Literal.parseLiteral(Belief.OWN_GOAL_KNOWN));
+            }
+            else
+            {
+                System.out.println("Right goal not visible");
+                l.add(Literal.parseLiteral(Belief.OWN_GOAL_UNKNOWN));
+            }
+
+        }
+        
 
         System.out.println("Generated beliefs: " + l);
         return l;
