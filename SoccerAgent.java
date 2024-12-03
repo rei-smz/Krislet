@@ -18,6 +18,7 @@ public class SoccerAgent extends AgArch {
     private boolean m_isPositioning;
     private Agent m_agent;
     private char m_side;
+    private int m_number;
 
     public SoccerAgent(char side,
                       int number,
@@ -27,17 +28,22 @@ public class SoccerAgent extends AgArch {
         m_currentIntent = "";
         m_memory = memory;
         m_side = side;
+        m_number = number;
         
         // Initialize Jason agent immediately for play_on mode
-        initializeJasonAgent(side);
+        initializeJasonAgent(m_side, m_number);
     }
 
-    private void initializeJasonAgent(char side) {
+    private void initializeJasonAgent(char side, int number) {
         try {
             m_agent = new Agent();
             new TransitionSystem(m_agent, null, null, this);
             m_agent.initAg();
-            m_agent.load("player.asl");
+            if (number == 1) { // Assuming position 2 is defender
+                m_agent.load("defender.asl");
+            } else {
+                m_agent.load("attacker.asl"); // Default player
+            }
             m_agent.addBel(Literal.parseLiteral("side(" + side + ")"));
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Init error", e);
@@ -81,9 +87,31 @@ public class SoccerAgent extends AgArch {
         ObjectInfo ball = m_memory.getObject("ball");
         ObjectInfo goalL = m_memory.getObject("goal l");
         ObjectInfo goalR = m_memory.getObject("goal r");
+        ObjectInfo center = m_memory.getObject("flag c");
 
         System.out.println("\nPerception Cycle:");
         System.out.println("Side: " + m_side);
+        
+        // Add ball position relative to field side
+        if (ball != null && center != null) {
+            if (m_side == 'l') {
+                // For left team, our side is when ball's X position is negative
+                if (ball.getDistance() * Math.cos(Math.toRadians(ball.getDirection())) < 
+                    center.getDistance() * Math.cos(Math.toRadians(center.getDirection()))) {
+                    l.add(Literal.parseLiteral(Belief.BALL_ON_OUR_SIDE));
+                } else {
+                    l.add(Literal.parseLiteral(Belief.BALL_ON_THEIR_SIDE));
+                }
+            } else {
+                // For right team, our side is when ball's X position is positive
+                if (ball.getDistance() * Math.cos(Math.toRadians(ball.getDirection())) > 
+                    center.getDistance() * Math.cos(Math.toRadians(center.getDirection()))) {
+                    l.add(Literal.parseLiteral(Belief.BALL_ON_OUR_SIDE));
+                } else {
+                    l.add(Literal.parseLiteral(Belief.BALL_ON_THEIR_SIDE));
+                }
+            }
+        }
         
         if (ball == null) {
             System.out.println("Ball not visible");
@@ -129,7 +157,7 @@ public class SoccerAgent extends AgArch {
 
     public void startGameplay(String playMode) {
         m_isPositioning = false;
-        initializeJasonAgent(m_side);
+        initializeJasonAgent(m_side, m_number);
     }
 
     @Override
