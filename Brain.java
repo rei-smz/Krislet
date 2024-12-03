@@ -20,6 +20,7 @@ class Brain extends Thread implements SensorInput{
     private SoccerAgent m_agent;
     private char m_side;
     private boolean m_positioned;
+    private int m_number;
 
     //---------------------------------------------------------------------------
     // This constructor:
@@ -36,7 +37,7 @@ class Brain extends Thread implements SensorInput{
         m_playMode = playMode;
         m_side = side;
         m_positioned = false;
-        
+        m_number = number;
         m_agent = new SoccerAgent(side, number, playMode, m_memory);
         
         start();
@@ -70,7 +71,11 @@ class Brain extends Thread implements SensorInput{
     public void run() {
         // first put it somewhere on my side
          if (!m_positioned) {
-            m_krislet.move(-Math.random() * 52.5, 34 - Math.random() * 68.0);
+            if (m_number == 1) { // Defender
+                m_krislet.move(-Math.random() * 30.0, 34 - Math.random() * 68.0); // More defensive position
+            } else {
+                m_krislet.move(-Math.random() * 52.5, 34 - Math.random() * 68.0); // Original position
+            }
             m_positioned = true;
             try {
                 // Give some time for the move to complete
