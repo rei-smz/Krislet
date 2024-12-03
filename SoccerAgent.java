@@ -80,6 +80,7 @@ public class SoccerAgent extends AgArch {
         if (ball == null) {
             l.add(Literal.parseLiteral(Belief.buildBelief(Belief.UNKNOWN, Belief.BALL)));
         } else {
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.BALL)));
             if (ball.getDistance() > TARGET_BALL_DIST) {
                 l.add(Literal.parseLiteral(Belief.buildBelief(Belief.FAR, Belief.BALL)));
             } else {
