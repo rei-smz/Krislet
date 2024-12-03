@@ -78,12 +78,12 @@ public class SoccerAgent extends AgArch {
         ObjectInfo goalL = m_memory.getObject("goal l");
         ObjectInfo goalR = m_memory.getObject("goal r");
         if (ball == null) {
-            l.add(Literal.parseLiteral(Belief.BALL_UNKNOWN));
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.UNKNOWN, Belief.BALL)));
         } else {
             if (ball.getDistance() > TARGET_BALL_DIST) {
-                l.add(Literal.parseLiteral(Belief.BALL_FAR));
+                l.add(Literal.parseLiteral(Belief.buildBelief(Belief.FAR, Belief.BALL)));
             } else {
-                l.add(Literal.parseLiteral(Belief.BALL_CLOSE));
+                l.add(Literal.parseLiteral(Belief.buildBelief(Belief.CLOSE, Belief.BALL)));
             }
 
             if (ball.getDirection() != 0) {
@@ -94,15 +94,15 @@ public class SoccerAgent extends AgArch {
         }
 
         if (goalL == null) {
-            l.add(Literal.parseLiteral(Belief.GOAL_L_UNKNOWN));
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.UNKNOWN, Belief.GOAL_L)));
         } else {
-            l.add(Literal.parseLiteral(Belief.GOAL_L_KNOWN));
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.GOAL_L)));
         }
 
         if (goalR == null) {
-            l.add(Literal.parseLiteral(Belief.GOAL_R_UNKNOWN));
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.UNKNOWN, Belief.GOAL_R)));
         } else {
-            l.add(Literal.parseLiteral(Belief.GOAL_R_KNOWN));
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.GOAL_R)));
         }
         return l;
     }
