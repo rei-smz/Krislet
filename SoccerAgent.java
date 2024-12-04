@@ -26,8 +26,12 @@ public class SoccerAgent extends AgArch {
             Agent ag = new Agent();
             new TransitionSystem(ag, null, null, this);
             ag.initAg();
-//            ag.load(playMode + ".asl");
-            ag.loadInitialAS("player.asl");
+//            ag.load("player.asl");
+            if (number <= 2) { // Assuming position 2 is defender
+                ag.load("defender.asl");
+            } else {
+                ag.load("player.asl"); // Default player
+            }
             ag.addBel(Literal.parseLiteral("side(" + side + ")"));
             ag.addBel(Literal.parseLiteral("number(" + number + ")"));
         } catch (Exception e) {
@@ -58,7 +62,7 @@ public class SoccerAgent extends AgArch {
 
     @Override
     public void act(ActionExec action) {
-        getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
+//        getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
         // set that the execution was ok
         action.setResult(true);
         actionExecuted(action);
@@ -77,6 +81,18 @@ public class SoccerAgent extends AgArch {
         ObjectInfo ball = m_memory.getObject("ball");
         ObjectInfo goalL = m_memory.getObject("goal l");
         ObjectInfo goalR = m_memory.getObject("goal r");
+        ObjectInfo flagC = m_memory.getObject("flag c");
+        ObjectInfo flagCT = m_memory.getObject("flag c t");
+        ObjectInfo flagCB = m_memory.getObject("flag c b");
+        ObjectInfo flagLT = m_memory.getObject("flag l t");
+        ObjectInfo flagLB = m_memory.getObject("flag l b");
+        ObjectInfo flagRT = m_memory.getObject("flag r t");
+        ObjectInfo flagRB = m_memory.getObject("flag r b");
+        ObjectInfo flagPLT = m_memory.getObject("flag p l t");
+        ObjectInfo flagPLB = m_memory.getObject("flag p l b");
+        ObjectInfo flagPRT = m_memory.getObject("flag p r t");
+        ObjectInfo flagPRB = m_memory.getObject("flag p r b");
+
         if (ball == null) {
             l.add(Literal.parseLiteral(Belief.buildBelief(Belief.UNKNOWN, Belief.BALL)));
         } else {
@@ -88,9 +104,39 @@ public class SoccerAgent extends AgArch {
             }
 
             if (ball.getDirection() != 0) {
-                l.add(Literal.parseLiteral(Belief.BALL_DIFF_DIR));
+                l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_DIR, Belief.DIFF)));
             } else {
-                l.add(Literal.parseLiteral(Belief.BALL_SAME_DIR));
+                l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_DIR, Belief.SAME)));
+            }
+
+            if (flagC == null){
+                if ((flagLT != null && flagCT != null) || (flagLB != null && flagCB != null) ||
+                        (flagPLT != null && flagCT != null) || (flagPLB != null && flagCB != null)) {
+                    l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.LEFT)));
+                } else if ((flagRT != null && flagCT != null) || (flagRB != null && flagCB != null) ||
+                        (flagPRT != null && flagCT != null) || (flagPRB != null && flagCB != null)) {
+                    l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.RIGHT)));
+                } else {
+                    if (goalL != null) {
+                        l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.LEFT)));
+                    } else if (goalR != null) {
+                        l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.RIGHT)));
+                    }
+                }
+            } else {
+                if (flagC.getDistance() > ball.getDistance()) {
+                    if (goalL != null) {
+                        l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.RIGHT)));
+                    } else if (goalR != null) {
+                        l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.LEFT)));
+                    }
+                } else {
+                    if (goalL != null) {
+                        l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.LEFT)));
+                    } else if (goalR != null) {
+                        l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.RIGHT)));
+                    }
+                }
             }
         }
 
@@ -105,6 +151,7 @@ public class SoccerAgent extends AgArch {
         } else {
             l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.GOAL_R)));
         }
+//        logger.info(l.toString());
         return l;
     }
 

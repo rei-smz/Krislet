@@ -93,6 +93,9 @@ class Brain extends Thread implements SensorInput{
                 object = m_memory.getObject(objectName);
             }
             action.execute(object);
+            if (intent.getFunctor().equals("find")) {
+                m_memory.waitForNewInfo();
+            }
         }
         m_krislet.bye();
     }

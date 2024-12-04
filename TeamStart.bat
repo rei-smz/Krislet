@@ -1,22 +1,22 @@
 
-start java -cp ".;jason-2.3.jar" Krislet -team One
+start java -cp "libs/*;." Krislet -team One
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team One
+start java -cp "libs/*;." Krislet -team One
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team One
+start java -cp "libs/*;." Krislet -team One
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team One
+start java -cp "libs/*;." Krislet -team One
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team One
+start java -cp "libs/*;." Krislet -team One
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team Two
+start java -cp "libs/*;." Krislet -team Two
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team Two
+start java -cp "libs/*;." Krislet -team Two
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team Two
+start java -cp "libs/*;." Krislet -team Two
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team Two
+start java -cp "libs/*;." Krislet -team Two
 ping localhost
-start java -cp ".;jason-2.3.jar" Krislet -team Two
+start java -cp "libs/*;." Krislet -team Two
 ping localhost
 
