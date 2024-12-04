@@ -31,12 +31,20 @@
     !defend.
 
 // Ball is close but can't see target goal - keep turning to find it
-+!defend : close(ball) & side(l) & unknown(goal_r) <-
++!defend : close(ball) & side(l) & unknown(goal_r) & seen(goal_l) <-
     find(goal_r);
     !defend.
 
-+!defend : close(ball) & side(r) & unknown(goal_l) <-
++!defend : close(ball) & side(r) & unknown(goal_l) & seen(goal_r) <-
     find(goal_l);
+    !defend.
+
++!defend : close(ball) & side(l) & unknown(goal_r) & unknown(goal_l) <-
+    kick(ball);
+    !defend.
+
++!defend : close(ball) & side(r) & unknown(goal_l) & unknown(goal_r) <-
+    kick(ball);
     !defend.
 
 +!defend : true <-
