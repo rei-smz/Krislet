@@ -82,16 +82,39 @@ public class SoccerAgent extends AgArch {
         ObjectInfo goalL = m_memory.getObject("goal l");
         ObjectInfo goalR = m_memory.getObject("goal r");
         ObjectInfo flagC = m_memory.getObject("flag c");
-        ObjectInfo flagCT = m_memory.getObject("flag c t");
-        ObjectInfo flagCB = m_memory.getObject("flag c b");
-        ObjectInfo flagLT = m_memory.getObject("flag l t");
-        ObjectInfo flagLB = m_memory.getObject("flag l b");
-        ObjectInfo flagRT = m_memory.getObject("flag r t");
-        ObjectInfo flagRB = m_memory.getObject("flag r b");
         ObjectInfo flagPLT = m_memory.getObject("flag p l t");
         ObjectInfo flagPLB = m_memory.getObject("flag p l b");
         ObjectInfo flagPRT = m_memory.getObject("flag p r t");
         ObjectInfo flagPRB = m_memory.getObject("flag p r b");
+
+        List<ObjectInfo> lines = m_memory.getObjects("line");
+        final int LINE_CNT = 4;
+        final int LINE_L = 0;
+        final int LINE_R = 1;
+        final int LINE_T = 2;
+        final int LINE_B = 3;
+        boolean[] lineVisible = {false, false, false, false};
+        for (ObjectInfo line : lines) {
+            char lineType = ((LineInfo)line).m_kind;
+            switch (lineType) {
+                case 'l':
+                    lineVisible[LINE_L] = true;
+                    break;
+                case 'r':
+                    lineVisible[LINE_R] = true;
+                    break;
+                case 't':
+                    lineVisible[LINE_T] = true;
+                    break;
+                case 'b':
+                    lineVisible[LINE_B] = true;
+                    break;
+            }
+        }
+//        logger.info(lineL.toString() + " " + lineR.toString());
+//        if (lineL != null) {
+//            logger.info("line l seen");
+//        }
 
         if (ball == null) {
             l.add(Literal.parseLiteral(Belief.buildBelief(Belief.UNKNOWN, Belief.BALL)));
@@ -110,30 +133,30 @@ public class SoccerAgent extends AgArch {
             }
 
             if (flagC == null){
-                if ((flagLT != null && flagCT != null) || (flagLB != null && flagCB != null) ||
-                        (flagPLT != null && flagCT != null) || (flagPLB != null && flagCB != null)) {
+                if (lineVisible[LINE_L]) {
+//                    logger.info(String.valueOf(((LineInfo) lineL).m_kind));
                     l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.LEFT)));
-                } else if ((flagRT != null && flagCT != null) || (flagRB != null && flagCB != null) ||
-                        (flagPRT != null && flagCT != null) || (flagPRB != null && flagCB != null)) {
+                } else if (lineVisible[LINE_R]) {
+//                    logger.info("line r seen");
                     l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.RIGHT)));
                 } else {
-                    if (goalL != null) {
+                    if ((flagPLT != null && lineVisible[LINE_T]) || (flagPLB != null && lineVisible[LINE_B])) {
                         l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.LEFT)));
-                    } else if (goalR != null) {
+                    } else if ((flagPRT != null && lineVisible[LINE_T]) || (flagPRB != null && lineVisible[LINE_B])) {
                         l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.RIGHT)));
                     }
                 }
             } else {
                 if (flagC.getDistance() > ball.getDistance()) {
-                    if (goalL != null) {
+                    if (lineVisible[LINE_L]) {
                         l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.RIGHT)));
-                    } else if (goalR != null) {
+                    } else if (lineVisible[LINE_R]) {
                         l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.LEFT)));
                     }
                 } else {
-                    if (goalL != null) {
+                    if (lineVisible[LINE_L]) {
                         l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.LEFT)));
-                    } else if (goalR != null) {
+                    } else if (lineVisible[LINE_R]) {
                         l.add(Literal.parseLiteral(Belief.buildBelief(Belief.BALL_ON, Belief.RIGHT)));
                     }
                 }
