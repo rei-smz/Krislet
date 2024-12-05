@@ -17,26 +17,25 @@
     !handle_ball.
 
 // At ball, look for correct goal based on side
-// Left side player looks for right goal
-+!handle_ball : close(ball) & side(l) & unknown(goal_r) <- 
-    find(goal_r);  // Using kick to turn to find goal
++!handle_ball : close(ball) & oppo_goal(G) & unknown(G) <-
+    find(G);  // Using kick to turn to find goal
     !handle_ball.
 
 // Right side player looks for left goal
-+!handle_ball : close(ball) & side(r) & unknown(goal_l) <-
-    find(goal_l);  // Using kick to turn to find goal
-    !handle_ball.
+//+!handle_ball : close(ball) & side(r) & unknown(goal_l) <-
+//    find(goal_l);  // Using kick to turn to find goal
+//    !handle_ball.
 
 // Kick to correct goal when visible
 // Left side player kicks to right goal
-+!handle_ball : close(ball) & side(l) & seen(goal_r) <-
++!handle_ball : close(ball) & oppo_goal(G) & seen(G) <-
     kick(goal_r);
     !handle_ball.
 
 // Right side player kicks to left goal
-+!handle_ball : close(ball) & side(r) & seen(goal_l) <-
-    kick(goal_l);
-    !handle_ball.
+//+!handle_ball : close(ball) & side(r) & seen(goal_l) <-
+//    kick(goal_l);
+//    !handle_ball.
 
 // Default fallback - keep looking
 -!handle_ball : true <-

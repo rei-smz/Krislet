@@ -32,7 +32,13 @@ public class SoccerAgent extends AgArch {
             } else {
                 ag.load("player.asl"); // Default player
             }
+            ag.addBel(Literal.parseLiteral("our_goal(goal_" + side + ")"));
             ag.addBel(Literal.parseLiteral("side(" + side + ")"));
+            if (side == 'l') {
+                ag.addBel(Literal.parseLiteral("oppo_goal(goal_r)"));
+            } else {
+                ag.addBel(Literal.parseLiteral("oppo_goal(goal_l)"));
+            }
             ag.addBel(Literal.parseLiteral("number(" + number + ")"));
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Init error", e);
@@ -62,7 +68,7 @@ public class SoccerAgent extends AgArch {
 
     @Override
     public void act(ActionExec action) {
-//        getTS().getLogger().info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
+        logger.info("Agent " + getAgName() + " is doing: " + action.getActionTerm());
         // set that the execution was ok
         action.setResult(true);
         actionExecuted(action);
@@ -169,7 +175,7 @@ public class SoccerAgent extends AgArch {
         } else {
             l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.GOAL_R)));
         }
-//        logger.info(l.toString());
+        logger.info(l.toString());
         return l;
     }
 

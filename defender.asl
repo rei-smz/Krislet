@@ -12,40 +12,40 @@
     !defend.
 
 // Ball is on our side and aligned - DASH to it
-+!defend : far(ball) & ball_dir(same) & side(l) & ball_on(l) <-
++!defend : far(ball) & ball_dir(same) & side(S) & ball_on(S) <-
     dash(ball);
     !defend.
 
 // Ball is on our side and aligned - DASH to it
-+!defend : far(ball) & ball_dir(same) & side(r) & ball_on(r) <-
-    dash(ball);
-    !defend.
+//+!defend : far(ball) & ball_dir(same) & side(r) & ball_on(r) <-
+//    dash(ball);
+//    !defend.
 
 // Ball is close and we can see target goal - kick
-+!defend : close(ball) & side(l) & seen(goal_r) <- 
-    kick(goal_r);
++!defend : close(ball) & oppo_goal(G) & seen(G) <-
+    kick(G);
     !defend.
 
-+!defend : close(ball) & side(r) & seen(goal_l) <- 
-    kick(goal_l);
-    !defend.
+//+!defend : close(ball) & side(r) & seen(goal_l) <-
+//    kick(goal_l);
+//    !defend.
 
 // Ball is close but can't see target goal - keep turning to find it
-+!defend : close(ball) & side(l) & unknown(goal_r) & seen(goal_l) <-
-    find(goal_r);
++!defend : close(ball) & side(S) & oppo_goal(G) & unknown(G) & seen(line_S) <-
+    find(G);
     !defend.
 
-+!defend : close(ball) & side(r) & unknown(goal_l) & seen(goal_r) <-
-    find(goal_l);
-    !defend.
+//+!defend : close(ball) & side(r) & unknown(goal_l) & seen(line_r) <-
+//    find(goal_l);
+//    !defend.
 
-+!defend : close(ball) & side(l) & unknown(goal_r) & not seen(line_l) <-
++!defend : close(ball) & side(S) & oppo_goal(G) & unknown(G) & not seen(line_S) <-
     kick(ball);
     !defend.
 
-+!defend : close(ball) & side(r) & unknown(goal_l) & not seen(line_r) <-
-    kick(ball);
-    !defend.
+//+!defend : close(ball) & side(r) & unknown(goal_l) & not seen(line_r) <-
+//    kick(ball);
+//    !defend.
 
 +!defend : true <-
     find(ball);
