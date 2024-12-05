@@ -39,11 +39,11 @@
     find(goal_l);
     !defend.
 
-+!defend : close(ball) & side(l) & unknown(goal_r) & unknown(goal_l) <-
++!defend : close(ball) & side(l) & unknown(goal_r) & not seen(line_l) <-
     kick(ball);
     !defend.
 
-+!defend : close(ball) & side(r) & unknown(goal_l) & unknown(goal_r) <-
++!defend : close(ball) & side(r) & unknown(goal_l) & not seen(line_r) <-
     kick(ball);
     !defend.
 
