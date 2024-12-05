@@ -94,6 +94,7 @@ public class SoccerAgent extends AgArch {
         ObjectInfo flagPRB = m_memory.getObject("flag p r b");
 
         List<ObjectInfo> lines = m_memory.getObjects("line");
+        final int LINE_CNT = 4;
         final int LINE_L = 0;
         final int LINE_R = 1;
         final int LINE_T = 2;
@@ -104,11 +105,9 @@ public class SoccerAgent extends AgArch {
             switch (lineType) {
                 case 'l':
                     lineVisible[LINE_L] = true;
-                    l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.LINE_L)));
                     break;
                 case 'r':
                     lineVisible[LINE_R] = true;
-                    l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.LINE_R)));
                     break;
                 case 't':
                     lineVisible[LINE_T] = true;
@@ -117,6 +116,17 @@ public class SoccerAgent extends AgArch {
                     lineVisible[LINE_B] = true;
                     break;
             }
+        }
+        if (lineVisible[LINE_L]) {
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.LINE_L)));
+        } else {
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.UNKNOWN, Belief.LINE_L)));
+        }
+
+        if (lineVisible[LINE_R]) {
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.SEEN, Belief.LINE_R)));
+        } else {
+            l.add(Literal.parseLiteral(Belief.buildBelief(Belief.UNKNOWN, Belief.LINE_R)));
         }
 
         if (ball == null) {
