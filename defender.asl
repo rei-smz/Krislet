@@ -39,7 +39,7 @@
 //    find(goal_l);
 //    !defend.
 
-+!defend : close(ball) & side(S) & oppo_goal(G) & unknown(G) & not seen(line_S) <-
++!defend : close(ball) & side(S) & oppo_goal(G) & unknown(G) & unknown(line_S) <-
     kick(ball);
     !defend.
 
